@@ -4,7 +4,7 @@
 Sign in at `/admin` as an **admin** → **الإعدادات** tab:
 - Unit price (EGP). Compare-at price only if it is a real previous price.
 - Flat shipping fee per order (current: 80 EGP), optional per-governorate overrides.
-Current confirmed values: Dutti, 750 EGP (was 800), flat 80 EGP shipping per order. Delivery coverage is confirmed by phone, not claimed on the page.
+Current confirmed values: Dutti, 750 EGP (was 800), flat 80 EGP shipping per order. Shipping covers all 27 governorates at the flat fee.
 The confirm button stays disabled and the server rejects orders (`not_configured`) until a price and at least one governorate rate exist. All totals are computed in the database function `create_cod_order`; browser prices are never trusted.
 
 Still to publish on the page once supplied: return/exchange policy, warranty, official contacts, real reviews.
