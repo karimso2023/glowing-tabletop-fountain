@@ -217,6 +217,53 @@ export type Database = {
           },
         ]
       }
+      order_notifications: {
+        Row: {
+          attempts: number
+          channel: string
+          created_at: string
+          last_error: string | null
+          locked_until: string | null
+          message_id: number | null
+          next_attempt_at: string
+          order_id: string
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          last_error?: string | null
+          locked_until?: string | null
+          message_id?: number | null
+          next_attempt_at?: string
+          order_id: string
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          last_error?: string | null
+          locked_until?: string | null
+          message_id?: number | null
+          next_attempt_at?: string
+          order_id?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_outbox: {
         Row: {
           attempts: number
@@ -445,6 +492,27 @@ export type Database = {
         }
         Returns: Json
       }
+      claim_order_notifications: {
+        Args: { p_limit: number }
+        Returns: {
+          attempts: number
+          channel: string
+          created_at: string
+          last_error: string | null
+          locked_until: string | null
+          message_id: number | null
+          next_attempt_at: string
+          order_id: string
+          sent_at: string | null
+          status: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "order_notifications"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       claim_outbox: {
         Args: { p_limit: number }
         Returns: {
@@ -483,6 +551,10 @@ export type Database = {
           p_utm_source: string
         }
         Returns: Json
+      }
+      enqueue_order_notification: {
+        Args: { p_order_id: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
