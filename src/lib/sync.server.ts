@@ -24,7 +24,7 @@ export function n8nConfigured() {
 export async function dispatchOutbox(admin: Admin, limit = 6) {
   const url = process.env["N8N_WEBHOOK_URL"];
   const token = process.env["N8N_WEBHOOK_TOKEN"];
-  if (!isAllowedWebhookUrl(url) || !token) return { skipped: "n8n_not_configured", processed: 0 };
+  if (!url || !isAllowedWebhookUrl(url) || !token) return { skipped: "n8n_not_configured", processed: 0 };
 
   const { data: rows, error } = await admin.rpc("claim_outbox", { p_limit: limit });
   if (error) throw new Error(`claim_outbox failed: ${error.message}`);
