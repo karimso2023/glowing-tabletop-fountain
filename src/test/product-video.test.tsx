@@ -2,7 +2,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductVideo } from "@/components/store/ProductVideo";
 
-let observers: { callback: IntersectionObserverCallback; options?: IntersectionObserverInit }[];
+let observers: { callback: IntersectionObserverCallback; options: IntersectionObserverInit | undefined }[];
 let play: ReturnType<typeof vi.spyOn>;
 
 function intersect(index: number) {
