@@ -14,4 +14,6 @@
 - Google Sheets sync goes through `order_outbox` + `dispatchOutbox` (src/lib/sync.server.ts) to an n8n webhook; never send webhooks from the browser.
 - Admin access = `user_roles` (admin/staff) checked by RLS (`is_order_staff`, `has_role`); signup grants nothing.
 - Commerce config values left NULL mean "not supplied"; UI must show unavailable, not invent values.
+- Visitor IP/geo is trusted only from src/server.ts edge injection (request.cf + cf-connecting-ip, nonce-tagged x-dutti-* headers); never X-Forwarded-For. Why: other headers are client-spoofable.
+- Visitor analytics are consent-gated, keyed by an HttpOnly random cookie (hashed in DB), written only via service-role RPCs, and readable only by admins (`admin_visitor_stats`, `order_attribution` policy); order attribution is best-effort and must never block order creation or enter Sheets/staff CSV.
 - Product video loading and one-time viewport playback live in ProductVideo; native controls and manual pause take precedence over autoplay.
