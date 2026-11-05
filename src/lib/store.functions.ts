@@ -45,6 +45,22 @@ export const getStoreConfig = createServerFn({ method: "GET" }).handler(async ()
   };
 });
 
+async function recordAttribution(orderNumber: string, data: { analyticsConsent: boolean; utm: Record<string, string | undefined> }) {
+  const srv = await import("./analytics.server");
+  const { cleanUtm } = await import("./analytics-core");
+  const client = srv.getTrustedClient();
+  const tokenHash = data.analyticsConsent ? await srv.currentTokenHash() : null;
+  const utm = cleanUtm(data.utm);
+  const n = null as unknown as string;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin.rpc("record_order_attribution", {
+    p_order_number: orderNumber, p_token_hash: tokenHash ?? n, p_consent: data.analyticsConsent,
+    p_ip: client.ip ?? n, p_country: client.country ?? n, p_region: client.region ?? n, p_city: client.city ?? n,
+    p_utm_source: utm.source ?? n, p_utm_medium: utm.medium ?? n, p_utm_campaign: utm.campaign ?? n, p_utm_content: utm.content ?? n,
+  });
+  if (error) console.error("record_order_attribution failed");
+}
+
 const ERR: Record<string, string> = {
   not_configured: "الطلب مش متاح حاليًا لحد ما يتم تحديد السعر ومصاريف الشحن.",
   governorate_unavailable: "للأسف الشحن لمحافظتك مش متاح حاليًا.",
@@ -88,6 +104,13 @@ export const createOrder = createServerFn({ method: "POST" })
     }
     const r = res as { ok: boolean; error?: string; order_number?: string; total_price?: number; duplicate?: boolean };
     if (!r.ok) return { ok: false as const, message: ERR[r.error ?? ""] ?? "تعذر تسجيل الطلب." };
+
+    // Admin-only attribution snapshot. Strictly best-effort: never blocks or fails the order.
+    try {
+      await Promise.race([recordAttribution(r.order_number!, data), new Promise((res) => setTimeout(res, 1500))]);
+    } catch {
+      console.error("order attribution skipped");
+    }
 
     // Best-effort immediate sync; the outbox + scheduled dispatcher guarantee eventual delivery.
     if (!r.duplicate) {

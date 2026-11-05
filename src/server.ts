@@ -44,9 +44,40 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+// Trusted client metadata: only the Cloudflare edge (request.cf present) sets
+// cf-connecting-ip and geo. Any client-sent x-dutti-* header is stripped and the
+// values are re-emitted with a per-isolate nonce so app code can tell them apart
+// from anything a visitor could inject. X-Forwarded-For is never trusted.
+function withTrustedIngress(request: Request): Request {
+  const h = new Headers(request.headers);
+  for (const k of [...h.keys()]) if (k.startsWith("x-dutti-")) h.delete(k);
+  const cf = (request as unknown as { cf?: Record<string, unknown> }).cf;
+  if (cf && typeof cf === "object") {
+    const g = globalThis as unknown as { __duttiIngressNonce?: string };
+    g.__duttiIngressNonce ??= crypto.randomUUID();
+    h.set("x-dutti-ingress", g.__duttiIngressNonce);
+    const ip = request.headers.get("cf-connecting-ip");
+    if (ip) h.set("x-dutti-client-ip", ip);
+    for (const k of ["country", "region", "city"] as const) {
+      const v = cf[k];
+      if (typeof v === "string" && v) h.set(`x-dutti-geo-${k}`, encodeURIComponent(v.slice(0, 120)));
+    }
+  }
+  const hasBody = request.method !== "GET" && request.method !== "HEAD";
+  return new Request(request.url, {
+    method: request.method,
+    headers: h,
+    body: hasBody ? request.body : null,
+    redirect: request.redirect,
+    signal: request.signal,
+    ...(hasBody ? { duplex: "half" } : {}),
+  } as RequestInit);
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      request = withTrustedIngress(request);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

@@ -32,6 +32,7 @@ export const orderInputSchema = z.object({
     })
     .optional()
     .default({}),
+  analyticsConsent: z.boolean().optional().default(false),
   // anti-bot
   website: z.string().max(0).optional().default(""),
   startedAt: z.number().int(),

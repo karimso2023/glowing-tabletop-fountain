@@ -9,6 +9,7 @@ import { GOVERNORATES, formatEGP, toLatinDigits } from "@/lib/egypt";
 import { orderInputSchema } from "@/lib/order-schema";
 import { createOrder, type PublicConfig } from "@/lib/store.functions";
 import { readUtm, track, trackOrderRegistered } from "@/lib/tracking";
+import { getConsent, trackCheckoutStart } from "@/lib/analytics-client";
 
 type Fields = { name: string; phone: string; governorate: string; city: string; address: string; notes: string };
 const empty: Fields = { name: "", phone: "", governorate: "", city: "", address: "", notes: "" };
@@ -38,7 +39,7 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
   const governorateUnavailable = !!f.governorate && shipping == null && config.orderable;
 
   const set = (k: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    if (!started.current) { started.current = true; track("InitiateCheckout"); }
+    if (!started.current) { started.current = true; track("InitiateCheckout"); trackCheckoutStart(); }
     const v = k === "phone" ? toLatinDigits(e.target.value) : e.target.value;
     setF((s) => ({ ...s, [k]: v }));
     if (errors[k]) setErrors((er) => ({ ...er, [k]: "" }));
@@ -47,7 +48,7 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
 
   const payload = useMemo(() => ({
     idempotencyKey: idemKey.current, name: f.name, phone: f.phone, governorate: f.governorate, city: f.city,
-    address: f.address, quantity: qty, notes: f.notes, utm: readUtm(), website: honeypot, startedAt: startedAt.current,
+    address: f.address, quantity: qty, notes: f.notes, utm: readUtm(), analyticsConsent: getConsent() === "granted", website: honeypot, startedAt: startedAt.current,
   }), [f, qty, honeypot]);
 
   function validate() {
