@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Droplets, Gift, Home, Layers, Lightbulb, Mountain, Banknote, Truck, RefreshCcw, ShieldCheck, X, MessageCircle } from "lucide-react";
@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkout } from "@/components/store/Checkout";
 import { ConsentBanner } from "@/components/store/ConsentBanner";
-import { Link } from "@tanstack/react-router";
 import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";

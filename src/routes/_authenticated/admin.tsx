@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GOVERNORATES, formatEGP } from "@/lib/egypt";
 import { getIntegrationState, getN8nWorkflow, retrySync } from "@/lib/admin.functions";
+import { VisitorStatsPanel, OrderAttribution } from "@/components/admin/VisitorStats";
 import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -73,9 +74,11 @@ function AdminPage() {
         <Tabs defaultValue="orders" className="mt-6">
           <TabsList>
             <TabsTrigger value="orders">الطلبات</TabsTrigger>
+            {state.isAdmin && <TabsTrigger value="visitors">إحصائيات الزوار</TabsTrigger>}
             {state.isAdmin && <TabsTrigger value="settings">الإعدادات</TabsTrigger>}
           </TabsList>
-          <TabsContent value="orders"><Orders /></TabsContent>
+          <TabsContent value="orders"><Orders isAdmin={state.isAdmin} /></TabsContent>
+          {state.isAdmin && <TabsContent value="visitors"><VisitorStatsPanel /></TabsContent>}
           {state.isAdmin && <TabsContent value="settings"><Settings /></TabsContent>}
         </Tabs>
       </main>
@@ -99,7 +102,8 @@ function SyncBanner({ state }: { state: Awaited<ReturnType<typeof getIntegration
   );
 }
 
-function Orders() {
+function Orders({ isAdmin }: { isAdmin: boolean }) {
+  const [openAttr, setOpenAttr] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [gov, setGov] = useState("");
   const [status, setStatus] = useState("");
@@ -188,7 +192,7 @@ function Orders() {
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead className="bg-muted text-right">
-            <tr>{["الطلب", "التاريخ", "العميل", "الهاتف", "العنوان", "الكمية", "الإجمالي", "الحالة", "المزامنة"].map((h) => <th key={h} className="p-3 font-bold whitespace-nowrap">{h}</th>)}</tr>
+            <tr>{["الطلب", "التاريخ", "العميل", "الهاتف", "العنوان", "الكمية", "الإجمالي", "الحالة", "المزامنة", ...(isAdmin ? ["الزيارة"] : [])].map((h) => <th key={h} className="p-3 font-bold whitespace-nowrap">{h}</th>)}</tr>
           </thead>
           <tbody>
             {orders.isLoading && <tr><td colSpan={9} className="p-6 text-center">جاري التحميل…</td></tr>}
@@ -211,6 +215,12 @@ function Orders() {
                   <Badge variant={o.sync_status === "Synced" ? "default" : "outline"} className={o.sync_status === "Failed" ? "border-destructive text-destructive" : ""}>{o.sync_status}</Badge>
                   {o.sync_status !== "Synced" && <Button size="sm" variant="link" onClick={() => doRetry(o.id)}>إعادة</Button>}
                 </td>
+                {isAdmin && (
+                  <td className="p-3 min-w-40">
+                    <Button size="sm" variant="link" onClick={() => setOpenAttr(openAttr === o.id ? null : o.id)}>{openAttr === o.id ? "إخفاء" : "عرض"}</Button>
+                    {openAttr === o.id && <OrderAttribution orderId={o.id} />}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
