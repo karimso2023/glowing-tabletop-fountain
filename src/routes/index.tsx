@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Droplets, Gift, Home, Layers, Lightbulb, Mountain, Banknote, Truck, RefreshCcw, ShieldCheck, X } from "lucide-react";
+import { Droplets, Gift, Home, Layers, Lightbulb, Mountain, Banknote, Truck, RefreshCcw, ShieldCheck, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -21,7 +21,7 @@ const configQuery = queryOptions({ queryKey: ["store-config"], queryFn: () => ge
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "نافورة ميا LED صغيرة — ركن هادي في بيتك | الدفع عند الاستلام" },
+      { title: "نافورة ميا LED صغيرة من Dutti — ٧٥٠ ج.م | الدفع عند الاستلام" },
       { name: "description", content: "نافورة مكتب صغيرة بثلاث درجات لمية متدفقة، إضاءة LED دافية وحصى طبيعي. اطلبها دلوقتي والدفع عند الاستلام." },
       { property: "og:title", content: "نافورة ميا LED صغيرة — ركن صغير… وهدوء يملأ المكان" },
       { property: "og:description", content: "مية بتنزل على ثلاث درجات وإضاءة دافية. الدفع عند الاستلام." },
@@ -33,6 +33,9 @@ export const Route = createFileRoute("/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(configQuery),
   component: Landing,
 });
+
+const WHATSAPP_URL = "https://wa.me/201064377166";
+const WARRANTY = "ضمان على المنتج، واستبدال لو المنتج مش شغال";
 
 const GALLERY = [
   { src: hero.url, alt: "النافورة على ترابيزة بإضاءة دافية" },
@@ -69,7 +72,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background pb-24 text-foreground md:pb-0">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <span className="font-display text-lg font-bold">نافورة ميا</span>
+        <span className="font-display text-xl font-extrabold tracking-wide" dir="ltr">{config.storeName ?? "نافورة ميا"}</span>
         <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-bold"><Banknote className="size-4 text-gold" /> الدفع عند الاستلام</span>
       </header>
 
@@ -164,10 +167,12 @@ function Landing() {
               <p className="font-display text-2xl font-bold">السعر هيتعلن قريبًا</p>
             )}
             <p className="mt-3 opacity-80">
-              {config.shippingRates ? "مصاريف الشحن بتتحسب حسب محافظتك وبتظهرلك في ملخص الطلب قبل التأكيد." : "مصاريف الشحن والمحافظات المتاحة هيتم تحديدها قريبًا."}
+              {config.flatShippingFee != null
+                ? `الشحن ${formatEGP(config.flatShippingFee)} للأوردر كله مهما كانت الكمية. هنأكد معاك التوصيل لمنطقتك وقت تأكيد الطلب.`
+                : config.shippingRates ? "مصاريف الشحن بتتحسب حسب محافظتك وبتظهرلك في ملخص الطلب قبل التأكيد." : "مصاريف الشحن هيتم تحديدها قريبًا."}
             </p>
             {config.compareAtPrice && config.unitPrice && (
-              <p className="mt-2 font-bold text-gold">هتوفر {formatEGP(config.compareAtPrice - config.unitPrice)}</p>
+              <p className="mt-2 font-bold text-gold">هتوفر {formatEGP(config.compareAtPrice - config.unitPrice)} ({Math.round(((config.compareAtPrice - config.unitPrice) / config.compareAtPrice) * 10000) / 100}٪)</p>
             )}
           </div>
           <Button variant="goldOutline" size="xl" className="mt-6 text-primary-foreground" onClick={goOrder}>اطلب دلوقتي</Button>
@@ -177,10 +182,15 @@ function Landing() {
       {/* Trust */}
       <section className="mx-auto max-w-6xl px-5 py-14">
         <SectionTitle eyebrow="اطمّن" title="هتطلب وانت مرتاح" />
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Trust icon={Banknote} title="الدفع عند الاستلام" text="مش هتدفع أي حاجة غير لما الأوردر يوصلك." />
-          <Trust icon={Truck} title="تأكيد قبل الشحن" text="هنكلمك نأكد البيانات والعنوان قبل ما الأوردر يخرج." />
-          <Trust icon={RefreshCcw} title="الاستبدال والاسترجاع" text="تفاصيل السياسة هتتعلن هنا قريبًا، وتقدر تسأل عنها وقت تأكيد الطلب." />
+          <Trust icon={Truck} title="تأكيد قبل الشحن" text={`هنكلمك نأكد البيانات والعنوان وإمكانية التوصيل لمنطقتك قبل ما الأوردر يخرج.${config.flatShippingFee != null ? ` الشحن ${formatEGP(config.flatShippingFee)} للأوردر.` : ""}`} />
+          <Trust icon={RefreshCcw} title="الضمان" text={WARRANTY} />
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="block rounded-3xl border border-gold p-6 text-center transition-colors hover:bg-gold-soft/40">
+            <MessageCircle className="mx-auto size-8 text-gold" />
+            <h3 className="mt-3 font-bold">كلمنا واتساب</h3>
+            <p className="mt-1 text-sm text-muted-foreground" dir="ltr">+20 106 437 7166</p>
+          </a>
         </div>
       </section>
 
@@ -199,10 +209,10 @@ function Landing() {
         <Accordion type="single" collapsible className="mt-8">
           {[
             ["إزاي بدفع؟", "الدفع كاش عند استلام الأوردر. مش محتاج كارت ولا تعمل حساب."],
-            ["بكام السعر والشحن؟", config.unitPrice != null ? `سعر القطعة ${formatEGP(config.unitPrice)}، ومصاريف الشحن بتظهر حسب محافظتك في ملخص الطلب.` : "السعر ومصاريف الشحن هيتعلنوا هنا قريبًا، وهيظهروا بالتفصيل في ملخص الطلب قبل التأكيد."],
-            ["هتوصل لمحافظتي؟", "المحافظات المتاحة بتظهر وقت اختيار المحافظة في الفورم. لو محافظتك مش متاحة هيظهرلك ده قبل التأكيد."],
+            ["بكام السعر والشحن؟", config.unitPrice != null && config.flatShippingFee != null ? `سعر القطعة ${formatEGP(config.unitPrice)}${config.compareAtPrice ? ` بدل ${formatEGP(config.compareAtPrice)}` : ""}، والشحن ${formatEGP(config.flatShippingFee)} للأوردر كله. يعني قطعة واحدة إجماليها ${formatEGP(config.unitPrice + config.flatShippingFee)}.` : "السعر ومصاريف الشحن بيظهروا بالتفصيل في ملخص الطلب قبل التأكيد."],
+            ["هتوصل لمنطقتي؟", "سجّل طلبك وهنكلمك نأكد إمكانية التوصيل لمنطقتك قبل الشحن. ولو عندك سؤال قبل الطلب ابعتلنا واتساب."],
             ["في ألوان أو مقاسات تانية؟", "المتاح حاليًا هو الموديل اللي في الصور: أسود منقط بالأبيض مع حصى طبيعي."],
-            ["إيه سياسة الاسترجاع؟", "تفاصيل الاستبدال والاسترجاع هتتعلن قريبًا، وتقدر تسأل عنها لما نكلمك نأكد الطلب."],
+            ["في ضمان؟", `${WARRANTY}. لتفاصيل أكتر كلمنا واتساب.`],
             ["بعد ما أطلب إيه اللي هيحصل؟", "هيظهرلك رقم طلب، وهنتواصل معاك على الموبايل نأكد البيانات قبل الشحن."],
           ].map(([q, a]) => q && (
             <AccordionItem key={q} value={q}>
@@ -213,7 +223,10 @@ function Landing() {
         </Accordion>
       </section>
 
-      <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">نافورة ميا LED صغيرة — الدفع عند الاستلام</footer>
+      <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
+        <p><span dir="ltr">{config.storeName ?? ""}</span> — نافورة ميا LED صغيرة — الدفع عند الاستلام</p>
+        <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-bold text-foreground underline-offset-4 hover:underline"><MessageCircle className="size-4" /> واتساب <span dir="ltr">+20 106 437 7166</span></a>
+      </footer>
 
       {/* Sticky mobile bar */}
       <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur transition-transform duration-300 md:hidden ${formVisible ? "translate-y-full" : ""}`}>

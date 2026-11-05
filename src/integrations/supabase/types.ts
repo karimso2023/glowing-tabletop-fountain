@@ -178,31 +178,37 @@ export type Database = {
       store_config: {
         Row: {
           compare_at_price: number | null
+          flat_shipping_fee: number | null
           id: number
           max_quantity: number
           product_id: string
           product_name: string
           shipping_rates: Json | null
+          store_name: string | null
           unit_price: number | null
           updated_at: string
         }
         Insert: {
           compare_at_price?: number | null
+          flat_shipping_fee?: number | null
           id?: number
           max_quantity?: number
           product_id?: string
           product_name?: string
           shipping_rates?: Json | null
+          store_name?: string | null
           unit_price?: number | null
           updated_at?: string
         }
         Update: {
           compare_at_price?: number | null
+          flat_shipping_fee?: number | null
           id?: number
           max_quantity?: number
           product_id?: string
           product_name?: string
           shipping_rates?: Json | null
+          store_name?: string | null
           unit_price?: number | null
           updated_at?: string
         }

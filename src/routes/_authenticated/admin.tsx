@@ -229,6 +229,7 @@ function Settings() {
   const [price, setPrice] = useState<string | null>(null);
   const [compare, setCompare] = useState<string | null>(null);
   const [rates, setRates] = useState<Record<string, string> | null>(null);
+  const [flat, setFlat] = useState<string | null>(null);
   if (!cfg.data) return <p className="p-6">جاري التحميل…</p>;
   const c = cfg.data;
   const curRates = rates ?? Object.fromEntries(Object.entries((c.shipping_rates as Record<string, number>) ?? {}).map(([k, v]) => [k, String(v)]));
@@ -243,9 +244,12 @@ function Settings() {
       r[g] = n;
     }
     const pn = p ? Number(p) : null, cpn = cp ? Number(cp) : null;
+    const fl = (flat ?? (c.flat_shipping_fee?.toString() ?? "")).trim();
+    const fln = fl ? Number(fl) : null;
+    if (fln !== null && !(fln >= 0)) { toast.error("رسوم الشحن الثابتة غير صحيحة"); return; }
     if ((pn !== null && !(pn > 0)) || (cpn !== null && !(cpn > 0))) { toast.error("السعر لازم يكون رقم أكبر من صفر"); return; }
     const { error } = await supabase.from("store_config").update({
-      unit_price: pn, compare_at_price: cpn, shipping_rates: Object.keys(r).length ? r : null, updated_at: new Date().toISOString(),
+      unit_price: pn, compare_at_price: cpn, flat_shipping_fee: fln, shipping_rates: Object.keys(r).length ? r : null, updated_at: new Date().toISOString(),
     }).eq("id", 1);
     if (error) toast.error(error.message); else { toast.success("تم الحفظ"); qc.invalidateQueries(); }
   }
@@ -258,7 +262,8 @@ function Settings() {
         <label className="space-y-1 text-sm font-bold">السعر قبل الخصم (فقط لو حقيقي)<Input inputMode="decimal" value={compare ?? (c.compare_at_price?.toString() ?? "")} onChange={(e) => setCompare(e.target.value)} /></label>
       </div>
       <div>
-        <h3 className="font-bold">رسوم الشحن لكل محافظة (اتركها فاضية = غير متاح)</h3>
+        <label className="mb-4 block max-w-xs space-y-1 text-sm font-bold">شحن ثابت للأوردر (ج.م)<Input inputMode="decimal" value={flat ?? (c.flat_shipping_fee?.toString() ?? "")} onChange={(e) => setFlat(e.target.value)} /></label>
+        <h3 className="font-bold">رسوم خاصة لمحافظات معينة (اختياري — تغلب على الشحن الثابت)</h3>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {GOVERNORATES.map((g) => (
             <label key={g} className="flex items-center gap-2 text-sm"><span className="w-28 shrink-0">{g}</span>

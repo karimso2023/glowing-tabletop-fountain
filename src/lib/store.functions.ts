@@ -9,6 +9,8 @@ export type PublicConfig = {
   unitPrice: number | null;
   compareAtPrice: number | null;
   shippingRates: Record<string, number> | null;
+  flatShippingFee: number | null;
+  storeName: string | null;
   maxQuantity: number;
   orderable: boolean;
 };
@@ -36,8 +38,10 @@ export const getStoreConfig = createServerFn({ method: "GET" }).handler(async ()
     unitPrice: unit,
     compareAtPrice: compare && unit && compare > unit ? compare : null,
     shippingRates: rates && Object.keys(rates).length ? rates : null,
+    flatShippingFee: data.flat_shipping_fee == null ? null : Number(data.flat_shipping_fee),
+    storeName: data.store_name,
     maxQuantity: data.max_quantity,
-    orderable: unit != null && !!rates && Object.keys(rates).length > 0,
+    orderable: unit != null && ((!!rates && Object.keys(rates).length > 0) || data.flat_shipping_fee != null),
   };
 });
 

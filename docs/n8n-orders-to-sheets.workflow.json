@@ -39,7 +39,7 @@
     {
       "parameters": {
         "operation": "appendOrUpdate",
-        "documentId": { "__rl": true, "mode": "url", "value": "REPLACE_WITH_SHEET_URL" },
+        "documentId": { "__rl": true, "mode": "url", "value": "https://docs.google.com/spreadsheets/d/1BcS0E30EHFlcXRnIGf9Y0rDoGPVULO54cyRmYOqZ87M/edit" },
         "sheetName": { "__rl": true, "mode": "name", "value": "Orders" },
         "columns": {
           "mappingMode": "autoMapInputData",
