@@ -14,3 +14,4 @@
 - Google Sheets sync goes through `order_outbox` + `dispatchOutbox` (src/lib/sync.server.ts) to an n8n webhook; never send webhooks from the browser.
 - Admin access = `user_roles` (admin/staff) checked by RLS (`is_order_staff`, `has_role`); signup grants nothing.
 - Commerce config values left NULL mean "not supplied"; UI must show unavailable, not invent values.
+- Product video loading and one-time viewport playback live in ProductVideo; native controls and manual pause take precedence over autoplay.

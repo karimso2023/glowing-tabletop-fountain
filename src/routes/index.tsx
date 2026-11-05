@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkout } from "@/components/store/Checkout";
+import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";
 import { track } from "@/lib/tracking";
@@ -99,11 +100,8 @@ function Landing() {
       <section className="mx-auto max-w-4xl px-5 py-14">
         <SectionTitle eyebrow="شوفها وهي شغالة" title="المية والنور على الطبيعة" />
         <div className="mt-8 overflow-hidden rounded-[2rem] bg-primary shadow-soft">
-          <video controls playsInline preload="none" poster={poster.url} className="aspect-video w-full" aria-label="فيديو النافورة">
-            <source src={video.url} type="video/mp4" />
-          </video>
+          <ProductVideo src={video.url} poster={poster.url} />
         </div>
-        <p className="mt-3 text-center text-xs text-muted-foreground">الفيديو مش بيشتغل لوحده — دوس تشغيل وعلّي الصوت لو حابب تسمع صوت المية.</p>
         <CTA onClick={goOrder} />
       </section>
 
