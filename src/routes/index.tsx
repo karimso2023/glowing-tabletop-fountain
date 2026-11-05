@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkout } from "@/components/store/Checkout";
-import { ConsentBanner } from "@/components/store/ConsentBanner";
 import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";
