@@ -168,7 +168,7 @@ function Landing() {
             )}
             <p className="mt-3 opacity-80">
               {config.flatShippingFee != null
-                ? `الشحن ${formatEGP(config.flatShippingFee)} للأوردر كله مهما كانت الكمية. هنأكد معاك التوصيل لمنطقتك وقت تأكيد الطلب.`
+                ? `الشحن ${formatEGP(config.flatShippingFee)} للأوردر كله لكل محافظات مصر الـ٢٧، مهما كانت الكمية.`
                 : config.shippingRates ? "مصاريف الشحن بتتحسب حسب محافظتك وبتظهرلك في ملخص الطلب قبل التأكيد." : "مصاريف الشحن هيتم تحديدها قريبًا."}
             </p>
             {config.compareAtPrice && config.unitPrice && (
@@ -184,7 +184,7 @@ function Landing() {
         <SectionTitle eyebrow="اطمّن" title="هتطلب وانت مرتاح" />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Trust icon={Banknote} title="الدفع عند الاستلام" text="مش هتدفع أي حاجة غير لما الأوردر يوصلك." />
-          <Trust icon={Truck} title="تأكيد قبل الشحن" text={`هنكلمك نأكد البيانات والعنوان وإمكانية التوصيل لمنطقتك قبل ما الأوردر يخرج.${config.flatShippingFee != null ? ` الشحن ${formatEGP(config.flatShippingFee)} للأوردر.` : ""}`} />
+          <Trust icon={Truck} title="شحن لكل المحافظات" text={`بنوصّل لكل محافظات مصر${config.flatShippingFee != null ? ` بشحن ثابت ${formatEGP(config.flatShippingFee)} للأوردر` : ""}، وهنكلمك نأكد البيانات قبل الشحن.`} />
           <Trust icon={RefreshCcw} title="الضمان" text={WARRANTY} />
           <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="block rounded-3xl border border-gold p-6 text-center transition-colors hover:bg-gold-soft/40">
             <MessageCircle className="mx-auto size-8 text-gold" />
@@ -210,7 +210,7 @@ function Landing() {
           {[
             ["إزاي بدفع؟", "الدفع كاش عند استلام الأوردر. مش محتاج كارت ولا تعمل حساب."],
             ["بكام السعر والشحن؟", config.unitPrice != null && config.flatShippingFee != null ? `سعر القطعة ${formatEGP(config.unitPrice)}${config.compareAtPrice ? ` بدل ${formatEGP(config.compareAtPrice)}` : ""}، والشحن ${formatEGP(config.flatShippingFee)} للأوردر كله. يعني قطعة واحدة إجماليها ${formatEGP(config.unitPrice + config.flatShippingFee)}.` : "السعر ومصاريف الشحن بيظهروا بالتفصيل في ملخص الطلب قبل التأكيد."],
-            ["هتوصل لمنطقتي؟", "سجّل طلبك وهنكلمك نأكد إمكانية التوصيل لمنطقتك قبل الشحن. ولو عندك سؤال قبل الطلب ابعتلنا واتساب."],
+            ["بتوصلوا لمحافظتي؟", `أيوه، الشحن متاح لكل محافظات مصر الـ٢٧${config.flatShippingFee != null ? ` بنفس السعر ${formatEGP(config.flatShippingFee)} للأوردر` : ""}.`],
             ["في ألوان أو مقاسات تانية؟", "المتاح حاليًا هو الموديل اللي في الصور: أسود منقط بالأبيض مع حصى طبيعي."],
             ["في ضمان؟", `${WARRANTY}. لتفاصيل أكتر كلمنا واتساب.`],
             ["بعد ما أطلب إيه اللي هيحصل؟", "هيظهرلك رقم طلب، وهنتواصل معاك على الموبايل نأكد البيانات قبل الشحن."],

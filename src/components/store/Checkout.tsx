@@ -147,7 +147,7 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
             <p><b className="text-foreground">{f.name}</b> — <span dir="ltr">{f.phone}</span></p>
             <p>{f.governorate}، {f.city} — {f.address}</p>
           </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">هنأكد معاك إمكانية التوصيل لمنطقتك في مكالمة تأكيد الطلب قبل الشحن.</p>
+          <p className="text-xs leading-relaxed text-muted-foreground">الشحن متاح لكل محافظات مصر. هنكلمك نأكد بيانات الطلب قبل الشحن.</p>
           {!config.orderable && (
             <p className="rounded-xl border border-gold bg-gold-soft/40 p-3 text-sm">
               استقبال الطلبات هيتفتح أول ما يتم تأكيد السعر ومصاريف الشحن. بياناتك لسه موجودة في الفورم.
