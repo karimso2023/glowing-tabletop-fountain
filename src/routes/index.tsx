@@ -226,7 +226,6 @@ function Landing() {
         <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-bold text-foreground underline-offset-4 hover:underline"><MessageCircle className="size-4" /> واتساب <span dir="ltr">+20 106 437 7166</span></a>
         <p className="mt-2"><Link to="/privacy" className="underline">سياسة الخصوصية والإحصائيات</Link></p>
       </footer>
-      <ConsentBanner />
 
       {/* Sticky mobile bar */}
       <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur transition-transform duration-300 md:hidden ${formVisible ? "translate-y-full" : ""}`}>
