@@ -77,7 +77,7 @@ function Landing() {
       <section className="bg-warm">
         <div className="mx-auto grid max-w-6xl items-center gap-6 px-5 pb-10 md:grid-cols-2 md:gap-12 md:py-16">
           <div className="relative overflow-hidden rounded-[2rem] shadow-soft md:order-2">
-            <img src={hero.url} alt="نافورة ميا LED صغيرة بإضاءة دافية على ترابيزة" width={1280} height={1280} fetchPriority="high" className="aspect-square w-full object-cover" />
+            <img src={hero.url} alt="نافورة ميا LED صغيرة بإضاءة دافية على ترابيزة" width={1280} height={1280} fetchPriority="high" className="aspect-[5/4] w-full object-cover md:aspect-square" />
           </div>
           <div className="animate-rise md:order-1">
             <p className="text-sm font-bold text-gold">نافورة مكتب صغيرة بإضاءة LED</p>
