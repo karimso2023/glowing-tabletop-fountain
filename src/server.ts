@@ -63,7 +63,15 @@ function withTrustedIngress(request: Request): Request {
       if (typeof v === "string" && v) h.set(`x-dutti-geo-${k}`, encodeURIComponent(v.slice(0, 120)));
     }
   }
-  return new Request(request, { headers: h });
+  const hasBody = request.method !== "GET" && request.method !== "HEAD";
+  return new Request(request.url, {
+    method: request.method,
+    headers: h,
+    body: hasBody ? request.body : null,
+    redirect: request.redirect,
+    signal: request.signal,
+    ...(hasBody ? { duplex: "half" } : {}),
+  } as RequestInit);
 }
 
 export default {
