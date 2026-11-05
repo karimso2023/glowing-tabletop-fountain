@@ -75,12 +75,10 @@ export const createOrder = createServerFn({ method: "POST" })
     const elapsed = Date.now() - data.startedAt;
     if (elapsed < 3000) return { ok: false as const, message: "استنى ثانية وجرب تاني." };
 
-    const ip = getRequestHeader("cf-connecting-ip") ?? getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
-    let ipHash: string | null = null;
-    if (ip) {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`mya-order:${ip}`));
-      ipHash = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
-    }
+    // IP only from trusted edge ingress (same source as analytics); null otherwise, phone limits still apply.
+    const srvA = await import("./analytics.server");
+    const trustedIp = srvA.getTrustedClient().ip;
+    const ipHash: string | null = trustedIp ? await srvA.sha256Hex(`mya-order:${trustedIp}`) : null;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: res, error } = await supabaseAdmin.rpc("create_cod_order", {
