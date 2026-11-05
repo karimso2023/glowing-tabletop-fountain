@@ -110,7 +110,7 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
             </select>)}
           {governorateUnavailable && <p className="text-sm text-destructive">الشحن لمحافظة {f.governorate} مش متاح حاليًا.</p>}
           {field("city", "المدينة أو المنطقة", <Input id="f-city" autoComplete="address-level2" className={cls("city")} value={f.city} onChange={set("city")} />)}
-          {field("address", "العنوان بالتفصيل", <Textarea id="f-address" autoComplete="street-address" rows={3} placeholder="الشارع، رقم العمارة، الدور، علامة مميزة" className={`rounded-xl bg-background text-base ${errors.address ? "border-destructive" : ""}`} value={f.address} onChange={set("address")} />)}
+          {field("address", "العنوان بالتفصيل", <Textarea id="f-address" autoComplete="street-address" rows={3} placeholder="الشارع، رقم العمارة، الدور، علامة مميزة" className={`rounded-xl bg-background text-base ${errors["address"] ? "border-destructive" : ""}`} value={f.address} onChange={set("address")} />)}
           <div className="space-y-1.5">
             <Label className="text-sm font-bold">الكمية</Label>
             <div className="flex w-fit items-center gap-3 rounded-xl border border-input bg-background p-1">

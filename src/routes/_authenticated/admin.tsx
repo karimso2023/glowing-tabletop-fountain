@@ -165,7 +165,7 @@ function Orders() {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-        {[["all", "الإجمالي"], ...STATUSES.map((s) => [s, STATUS_AR[s]])].map(([k, label]) => (
+        {([["all", "الإجمالي"], ...STATUSES.map((s) => [s, STATUS_AR[s] ?? s])] as [string, string][]).map(([k, label]) => (
           <div key={k} className="rounded-2xl border border-border bg-card p-4">
             <p className="text-xs text-muted-foreground">{label}</p>
             <p className="font-display text-2xl font-bold">{counts.data?.[k] ?? "—"}</p>

@@ -59,7 +59,7 @@ function Landing() {
   useEffect(() => {
     const el = document.getElementById("order");
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setFormVisible(e.isIntersecting), { rootMargin: "0px 0px -10% 0px" });
+    const io = new IntersectionObserver(([e]) => setFormVisible(!!e?.isIntersecting), { rootMargin: "0px 0px -10% 0px" });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -138,7 +138,7 @@ function Landing() {
           <DialogTitle className="sr-only">صورة المنتج</DialogTitle>
           {lightbox !== null && (
             <div className="relative">
-              <img src={GALLERY[lightbox].src} alt={GALLERY[lightbox].alt} className="w-full rounded-3xl" />
+              <img src={GALLERY[lightbox]?.src} alt={GALLERY[lightbox]?.alt} className="w-full rounded-3xl" />
               <button onClick={() => setLightbox(null)} className="absolute top-3 left-3 grid size-10 place-items-center rounded-full bg-card shadow-soft" aria-label="إغلاق"><X className="size-5" /></button>
               <div className="mt-3 flex justify-center gap-2">
                 {GALLERY.map((_, i) => (
@@ -204,7 +204,7 @@ function Landing() {
             ["في ألوان أو مقاسات تانية؟", "المتاح حاليًا هو الموديل اللي في الصور: أسود منقط بالأبيض مع حصى طبيعي."],
             ["إيه سياسة الاسترجاع؟", "تفاصيل الاستبدال والاسترجاع هتتعلن قريبًا، وتقدر تسأل عنها لما نكلمك نأكد الطلب."],
             ["بعد ما أطلب إيه اللي هيحصل؟", "هيظهرلك رقم طلب، وهنتواصل معاك على الموبايل نأكد البيانات قبل الشحن."],
-          ].map(([q, a]) => (
+          ].map(([q, a]) => q && (
             <AccordionItem key={q} value={q}>
               <AccordionTrigger className="text-right text-base font-bold">{q}</AccordionTrigger>
               <AccordionContent className="leading-relaxed text-muted-foreground">{a}</AccordionContent>
