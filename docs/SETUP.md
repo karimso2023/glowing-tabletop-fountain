@@ -26,10 +26,11 @@ Make sure the tab is named **Orders** and row 1 headers are exactly:
 Order Date is sent already formatted in Africa/Cairo time.
 
 ## 4. n8n
-1. Import `docs/n8n-orders-to-sheets.workflow.json`.
+Instance: https://n8n.dutti.net/ (this root URL is NOT the webhook).
+1. Import `docs/n8n-orders-to-sheets.workflow.json` (admin → الإعدادات → download button).
 2. Webhook node → credential **Header Auth**: name `X-Webhook-Token`, value = a long random string you generate (password manager / `openssl rand -hex 32`).
 3. Sheets node → connect your Google account (OAuth2) and paste the sheet URL. It does **append or update matching "Order ID"**, so retries never create duplicate rows.
-4. Activate the workflow, copy the **Production URL**.
+4. Activate the workflow, copy the **Production URL** (`https://n8n.dutti.net/webhook/...`, never `/webhook-test/` or the root).
 5. In Lovable Project Settings → Secrets add `N8N_WEBHOOK_URL` (production URL) and `N8N_WEBHOOK_TOKEN` (same token).
 
 ## 5. Reliability design
