@@ -13,19 +13,54 @@
       "name": "Webhook (Header Auth)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [0, 300],
+      "position": [
+        0,
+        300
+      ],
       "webhookId": "mya-orders",
-      "credentials": { "httpHeaderAuth": { "id": "REPLACE", "name": "Order webhook token (X-Webhook-Token)" } }
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REPLACE",
+          "name": "Order webhook token (X-Webhook-Token)"
+        }
+      }
     },
     {
       "parameters": {
         "conditions": {
-          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
           "combinator": "and",
           "conditions": [
-            { "id": "c1", "leftValue": "={{ $json.body['Order ID'] }}", "rightValue": "^MYA-\\d{6}-\\d+$", "operator": { "type": "string", "operation": "regex" } },
-            { "id": "c2", "leftValue": "={{ $json.body['Phone Number'] }}", "rightValue": "^01[0125]\\d{8}$", "operator": { "type": "string", "operation": "regex" } },
-            { "id": "c3", "leftValue": "={{ Number($json.body['Total Price']) }}", "rightValue": 0, "operator": { "type": "number", "operation": "gt" } }
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.body['Order ID'] }}",
+              "rightValue": "^MYA-\\d{6}-\\d+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.body['Phone Number'] }}",
+              "rightValue": "^01[0125]\\d{8}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "c3",
+              "leftValue": "={{ Number($json.body['Total Price']) }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
           ]
         },
         "options": {}
@@ -34,70 +69,446 @@
       "name": "Validate payload",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
         "operation": "appendOrUpdate",
-        "documentId": { "__rl": true, "mode": "url", "value": "https://docs.google.com/spreadsheets/d/1BcS0E30EHFlcXRnIGf9Y0rDoGPVULO54cyRmYOqZ87M/edit" },
-        "sheetName": { "__rl": true, "mode": "name", "value": "Orders" },
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/1BcS0E30EHFlcXRnIGf9Y0rDoGPVULO54cyRmYOqZ87M/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Orders"
+        },
         "columns": {
           "mappingMode": "autoMapInputData",
           "value": {},
-          "matchingColumns": ["Order ID"]
+          "matchingColumns": [
+            "Order ID"
+          ],
+          "schema": [
+            {
+              "id": "Order ID",
+              "displayName": "Order ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Order Date",
+              "displayName": "Order Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Governorate",
+              "displayName": "Governorate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "City",
+              "displayName": "City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Address",
+              "displayName": "Full Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Color",
+              "displayName": "Product Color",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Size",
+              "displayName": "Product Size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Quantity",
+              "displayName": "Quantity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Unit Price",
+              "displayName": "Unit Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Shipping Fee",
+              "displayName": "Shipping Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Discount",
+              "displayName": "Discount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total Price",
+              "displayName": "Total Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Payment Method",
+              "displayName": "Payment Method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Order Status",
+              "displayName": "Order Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer Notes",
+              "displayName": "Customer Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UTM Source",
+              "displayName": "UTM Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "UTM Campaign",
+              "displayName": "UTM Campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sync Status",
+              "displayName": "Sync Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
         },
-        "options": { "cellFormat": "RAW" }
+        "options": {
+          "cellFormat": "RAW"
+        }
       },
       "id": "a3",
       "name": "Sheets: append or update by Order ID",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [500, 200],
+      "position": [
+        500,
+        200
+      ],
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 3000,
       "onError": "continueErrorOutput",
-      "credentials": { "googleSheetsOAuth2Api": { "id": "REPLACE", "name": "Google Sheets account" } }
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
-      "parameters": { "jsCode": "return [{ json: $('Webhook (Header Auth)').first().json.body }];" },
+      "parameters": {
+        "jsCode": "return [{ json: $('Webhook (Header Auth)').first().json.body }];"
+      },
       "id": "a7",
       "name": "Use body only",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [380, 200]
+      "position": [
+        380,
+        200
+      ]
     },
     {
-      "parameters": { "respondWith": "json", "responseBody": "={{ { ok: true, order_id: $('Webhook (Header Auth)').first().json.body['Order ID'] } }}", "options": { "responseCode": 200 } },
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ (() => { const id = $('Webhook (Header Auth)').first().json.body['Order ID']; const n = $('Sheets: read back by Order ID').all().filter(i => String(i.json['Order ID']) === String(id)).length; return { ok: n === 1, order_id: id, rows_found: n }; })() }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
       "id": "a4",
       "name": "Respond OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [760, 120]
+      "position": [
+        880,
+        120
+      ]
     },
     {
-      "parameters": { "respondWith": "json", "responseBody": "={{ { ok: false, error: 'sheets_failed' } }}", "options": { "responseCode": 502 } },
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'sheets_failed' } }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
       "id": "a5",
       "name": "Respond Sheets error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [760, 300]
+      "position": [
+        760,
+        300
+      ]
     },
     {
-      "parameters": { "respondWith": "json", "responseBody": "={{ { ok: false, error: 'invalid_payload' } }}", "options": { "responseCode": 422 } },
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: false, error: 'invalid_payload' } }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
       "id": "a6",
       "name": "Respond invalid",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [500, 420]
+      "position": [
+        500,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/1BcS0E30EHFlcXRnIGf9Y0rDoGPVULO54cyRmYOqZ87M/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Orders"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Order ID",
+              "lookupValue": "={{ $('Webhook (Header Auth)').first().json.body['Order ID'] }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": false
+        }
+      },
+      "id": "a8",
+      "name": "Sheets: read back by Order ID",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        630,
+        120
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "connections": {
-    "Webhook (Header Auth)": { "main": [[{ "node": "Validate payload", "type": "main", "index": 0 }]] },
-    "Validate payload": { "main": [[{ "node": "Use body only", "type": "main", "index": 0 }], [{ "node": "Respond invalid", "type": "main", "index": 0 }]] },
-    "Use body only": { "main": [[{ "node": "Sheets: append or update by Order ID", "type": "main", "index": 0 }]] },
-    "Sheets: append or update by Order ID": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }], [{ "node": "Respond Sheets error", "type": "main", "index": 0 }]] }
+    "Webhook (Header Auth)": {
+      "main": [
+        [
+          {
+            "node": "Validate payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate payload": {
+      "main": [
+        [
+          {
+            "node": "Use body only",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use body only": {
+      "main": [
+        [
+          {
+            "node": "Sheets: append or update by Order ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheets: append or update by Order ID": {
+      "main": [
+        [
+          {
+            "node": "Sheets: read back by Order ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Sheets error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheets: read back by Order ID": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1", "timezone": "Africa/Cairo" },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Cairo"
+  },
   "active": false
 }
