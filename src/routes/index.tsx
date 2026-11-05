@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkout } from "@/components/store/Checkout";
+import { ConsentBanner } from "@/components/store/ConsentBanner";
+import { Link } from "@tanstack/react-router";
 import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";
@@ -224,7 +226,9 @@ function Landing() {
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
         <p><span dir="ltr">{config.storeName ?? ""}</span> — نافورة ميا LED صغيرة — الدفع عند الاستلام</p>
         <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-bold text-foreground underline-offset-4 hover:underline"><MessageCircle className="size-4" /> واتساب <span dir="ltr">+20 106 437 7166</span></a>
+        <p className="mt-2"><Link to="/privacy" className="underline">سياسة الخصوصية والإحصائيات</Link></p>
       </footer>
+      <ConsentBanner />
 
       {/* Sticky mobile bar */}
       <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur transition-transform duration-300 md:hidden ${formVisible ? "translate-y-full" : ""}`}>
