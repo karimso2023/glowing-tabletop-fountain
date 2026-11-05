@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GOVERNORATES, formatEGP } from "@/lib/egypt";
-import { getIntegrationState, retrySync } from "@/lib/admin.functions";
+import { getIntegrationState, getN8nWorkflow, retrySync } from "@/lib/admin.functions";
 import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -272,6 +272,34 @@ function Settings() {
         </div>
       </div>
       <Button variant="order" size="lg" onClick={save}>حفظ</Button>
+      <SheetsSetup />
     </div>
+  );
+}
+
+function SheetsSetup() {
+  const fetchWf = useServerFn(getN8nWorkflow);
+  async function download() {
+    try {
+      const { json } = await fetchWf();
+      const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = "n8n-orders-to-sheets.workflow.json"; a.click();
+      URL.revokeObjectURL(url);
+    } catch { toast.error("تعذر تحميل الملف"); }
+  }
+  return (
+    <section className="space-y-3 border-t border-border pt-6 text-sm">
+      <h3 className="font-bold">ربط الطلبات بـ Google Sheets (عن طريق n8n)</h3>
+      <Button variant="outline" onClick={download}><Download className="ms-1 h-4 w-4" />تحميل ملف n8n workflow</Button>
+      <ol className="list-decimal space-y-1 pe-5 text-muted-foreground">
+        <li>في n8n: Import from file واختار الملف ده.</li>
+        <li>عقدة Webhook: اعمل Header Auth باسم <b>X-Webhook-Token</b> وقيمة سرية طويلة (من مدير كلمات السر).</li>
+        <li>عقدة Google Sheets: اربط حساب جوجل (OAuth) — الشيت الحالي متحدد بالفعل، وتاب اسمها Orders.</li>
+        <li>فعّل الـ workflow وانسخ Production URL.</li>
+        <li>في Lovable ← Project Settings ← Secrets ضيف <b>N8N_WEBHOOK_URL</b> و <b>N8N_WEBHOOK_TOKEN</b> (نفس القيمة). متبعتش القيم في الشات.</li>
+        <li>اعمل طلب تجربة واضغط «إعادة مزامنة» — الحالة هتبقى متأكدة بس لما n8n يرد بنجاح.</li>
+      </ol>
+    </section>
   );
 }
