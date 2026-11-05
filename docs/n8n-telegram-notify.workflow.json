@@ -1,41 +1,196 @@
 {
-  "name": "Dutti order → Telegram (staged, inactive)",
+  "name": "Dutti order → Telegram alerts",
   "nodes": [
     {
-      "id": "t1", "name": "Webhook (Header Auth)", "type": "n8n-nodes-base.webhook", "typeVersion": 2,
-      "webhookId": "dutti-telegram-notify", "position": [0, 300],
-      "parameters": { "httpMethod": "POST", "path": "dutti-telegram-notify", "authentication": "headerAuth", "responseMode": "responseNode", "options": {} },
-      "credentials": { "httpHeaderAuth": { "id": "CYaZNnozuVrk16Md", "name": "Order webhook token (X-Webhook-Token)" } }
+      "id": "t1",
+      "name": "Webhook (Header Auth)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "dutti-telegram-notify",
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dutti-telegram-notify",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CYaZNnozuVrk16Md",
+          "name": "Order webhook token (X-Webhook-Token)"
+        }
+      }
     },
     {
-      "id": "t2", "name": "Validate", "type": "n8n-nodes-base.if", "typeVersion": 2, "position": [240, 300],
-      "parameters": { "conditions": { "options": { "caseSensitive": true, "typeValidation": "loose" }, "combinator": "and", "conditions": [
-        { "id": "v1", "leftValue": "={{ $json.body['Order ID'] }}", "rightValue": "^MYA-\\d{6}-\\d+$", "operator": { "type": "string", "operation": "regex" } },
-        { "id": "v2", "leftValue": "={{ String($json.body.text || '').length }}", "rightValue": 0, "operator": { "type": "number", "operation": "gt" } }
-      ] }, "options": {} }
+      "id": "t2",
+      "name": "Validate",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "loose"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $json.body['Order ID'] }}",
+              "rightValue": "^MYA-\\d{6}-\\d+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "v2",
+              "leftValue": "={{ String($json.body.text || '').length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ]
+        },
+        "options": {}
+      }
     },
     {
-      "id": "t3", "name": "Telegram: send", "type": "n8n-nodes-base.telegram", "typeVersion": 1.2, "position": [500, 200],
+      "id": "t3",
+      "name": "Telegram: send",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        200
+      ],
       "onError": "continueErrorOutput",
-      "parameters": { "resource": "message", "operation": "sendMessage", "chatId": "SET_AUTHORIZED_CHAT_ID", "text": "={{ $('Webhook (Header Auth)').item.json.body.text }}", "additionalFields": { "appendAttribution": false } }
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "SET_AUTHORIZED_CHAT_ID",
+        "text": "={{ $('Webhook (Header Auth)').item.json.body.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "p5824Qc3SyfRsDOM",
+          "name": "Telegram account"
+        }
+      }
     },
     {
-      "id": "t4", "name": "Respond OK", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [760, 120],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, message_id: $json.result ? $json.result.message_id : $json.message_id }) }}", "options": {} }
+      "id": "t4",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        120
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, message_id: $json.result ? $json.result.message_id : $json.message_id, bot: ($json.result && $json.result.from) ? $json.result.from.username : null }) }}",
+        "options": {}
+      }
     },
     {
-      "id": "t5", "name": "Respond send failed", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [760, 300],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'telegram_failed' }) }}", "options": { "responseCode": 502 } }
+      "id": "t5",
+      "name": "Respond send failed",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        760,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'telegram_failed' }) }}",
+        "options": {
+          "responseCode": 502
+        }
+      }
     },
     {
-      "id": "t6", "name": "Respond invalid", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [500, 460],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'invalid_payload' }) }}", "options": { "responseCode": 422 } }
+      "id": "t6",
+      "name": "Respond invalid",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        460
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'invalid_payload' }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      }
     }
   ],
   "connections": {
-    "Webhook (Header Auth)": { "main": [[{ "node": "Validate", "type": "main", "index": 0 }]] },
-    "Validate": { "main": [[{ "node": "Telegram: send", "type": "main", "index": 0 }], [{ "node": "Respond invalid", "type": "main", "index": 0 }]] },
-    "Telegram: send": { "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }], [{ "node": "Respond send failed", "type": "main", "index": 0 }]] }
+    "Webhook (Header Auth)": {
+      "main": [
+        [
+          {
+            "node": "Validate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate": {
+      "main": [
+        [
+          {
+            "node": "Telegram: send",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: send": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond send failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" }
+  "settings": {
+    "executionOrder": "v1"
+  }
 }
