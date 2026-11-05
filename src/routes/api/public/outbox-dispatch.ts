@@ -10,7 +10,12 @@ export const Route = createFileRoute("/api/public/outbox-dispatch")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { dispatchOutbox } = await import("@/lib/sync.server");
         const result = await dispatchOutbox(supabaseAdmin, 6);
-        return Response.json(result);
+        let notifications: unknown = null;
+        try {
+          const { dispatchNotifications } = await import("@/lib/notify.server");
+          notifications = await dispatchNotifications(supabaseAdmin, 10);
+        } catch (e) { console.error("notification dispatch failed", e); }
+        return Response.json({ ...result, notifications });
       },
     },
   },

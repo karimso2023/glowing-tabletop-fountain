@@ -78,6 +78,11 @@ export async function dispatchOutbox(admin: Admin, limit = 6) {
       const { count } = await admin.from("order_outbox").select("id", { count: "exact", head: true })
         .eq("order_id", o.id).in("status", ["pending", "processing", "failed"]);
       if (!count) await admin.from("orders").update({ sync_status: "Synced" }).eq("id", o.id);
+      // Sheet row verified: queue at most one Telegram alert per order (idempotent; never fails the sync).
+      try {
+        const { enqueueOrderNotification } = await import("./notify.server");
+        await enqueueOrderNotification(admin, o.id);
+      } catch { console.error("notification enqueue skipped"); }
       await admin.from("integration_status").upsert({ key: "n8n_sheets", verified_at: now, last_checked_at: now, detail: `Order ${o.order_number} accepted by n8n` });
     } else {
       failed++;

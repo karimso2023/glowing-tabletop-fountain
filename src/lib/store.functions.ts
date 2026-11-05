@@ -115,6 +115,8 @@ export const createOrder = createServerFn({ method: "POST" })
       try {
         const { dispatchOutbox } = await import("./sync.server");
         await Promise.race([dispatchOutbox(supabaseAdmin, 3), new Promise((res) => setTimeout(res, 4000))]);
+        const { dispatchNotifications } = await import("./notify.server");
+        await Promise.race([dispatchNotifications(supabaseAdmin, 2), new Promise((res) => setTimeout(res, 3000))]);
       } catch (e) {
         console.error("inline dispatch failed", e);
       }
