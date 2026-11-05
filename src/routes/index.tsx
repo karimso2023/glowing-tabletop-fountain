@@ -10,6 +10,7 @@ import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";
 import { track } from "@/lib/tracking";
+import { startAnalytics } from "@/lib/analytics-client";
 import hero from "@/assets/fountain-hero.jpg.asset.json";
 import details from "@/assets/fountain-details.jpg.asset.json";
 import tabletop from "@/assets/fountain-tabletop.jpg.asset.json";
@@ -59,7 +60,7 @@ function Landing() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [formVisible, setFormVisible] = useState(false);
 
-  useEffect(() => { track("PageView"); track("ViewContent"); }, []);
+  useEffect(() => { track("PageView"); track("ViewContent"); startAnalytics(); }, []);
   useEffect(() => {
     const el = document.getElementById("order");
     if (!el) return;
