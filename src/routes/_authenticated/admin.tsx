@@ -293,10 +293,10 @@ function SheetsSetup() {
       <h3 className="font-bold">ربط الطلبات بـ Google Sheets (عن طريق n8n)</h3>
       <Button variant="outline" onClick={download}><Download className="ms-1 h-4 w-4" />تحميل ملف n8n workflow</Button>
       <ol className="list-decimal space-y-1 pe-5 text-muted-foreground">
-        <li>في n8n: Import from file واختار الملف ده.</li>
+        <li>افتح <a className="underline" href="https://n8n.dutti.net/" target="_blank" rel="noreferrer">n8n.dutti.net</a> ← Workflows ← Import from file واختار الملف ده.</li>
         <li>عقدة Webhook: اعمل Header Auth باسم <b>X-Webhook-Token</b> وقيمة سرية طويلة (من مدير كلمات السر).</li>
         <li>عقدة Google Sheets: اربط حساب جوجل (OAuth) — الشيت الحالي متحدد بالفعل، وتاب اسمها Orders.</li>
-        <li>فعّل الـ workflow وانسخ Production URL.</li>
+        <li>فعّل الـ workflow وانسخ <b>Production URL</b> من عقدة Webhook (شكله https://n8n.dutti.net/webhook/… — مش رابط الصفحة الرئيسية ولا webhook-test).</li>
         <li>في Lovable ← Project Settings ← Secrets ضيف <b>N8N_WEBHOOK_URL</b> و <b>N8N_WEBHOOK_TOKEN</b> (نفس القيمة). متبعتش القيم في الشات.</li>
         <li>اعمل طلب تجربة واضغط «إعادة مزامنة» — الحالة هتبقى متأكدة بس لما n8n يرد بنجاح.</li>
       </ol>
