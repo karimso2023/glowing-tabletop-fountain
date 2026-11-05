@@ -42,3 +42,7 @@ Instance: https://n8n.dutti.net/ (this root URL is NOT the webhook).
 
 ## 6. Tracking (prepared, inactive)
 `src/lib/tracking.ts` is a no-op until `VITE_META_PIXEL_ID` / `VITE_GA4_ID` exist. COD orders fire `Lead` (not `Purchase`) deduplicated by order number; no name/phone/address is sent. Before enabling: decide consent banner route and update a privacy policy.
+
+## Live status (Nov 2026)
+- n8n workflow "Landing Page Orders → Google Sheets" (id fBQdc7kcVuF7sMHy) is active at https://n8n.dutti.net/webhook/mya-orders, protected by header X-Webhook-Token.
+- The workflow upserts by Order ID into tab "Orders", then reads the row back and only replies ok:true when exactly one row exists for that Order ID.
