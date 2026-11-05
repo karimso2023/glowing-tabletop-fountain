@@ -1,5 +1,6 @@
-// Browser side of visitor analytics. Runs only after explicit consent; sends no
-// names/phones/addresses. Counts and IP/geo are decided on the server.
+// Browser side of visitor analytics. Runs by default; the visitor can opt out
+// from the privacy page. Sends no names/phones/addresses. Counts and IP/geo are
+// decided on the server.
 import { trackVisit, analyticsOptOut } from "./analytics.functions";
 import { readUtm } from "./tracking";
 
@@ -9,8 +10,8 @@ const HEARTBEAT_MS = 30_000;
 
 export function getConsent(): Consent {
   if (typeof window === "undefined") return null;
-  const v = localStorage.getItem(KEY);
-  return v === "granted" || v === "denied" ? v : null;
+  // Tracking is on unless the visitor explicitly opted out from the privacy page.
+  return localStorage.getItem(KEY) === "denied" ? "denied" : "granted";
 }
 
 let pageviewId = "";

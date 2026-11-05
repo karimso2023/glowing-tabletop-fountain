@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkout } from "@/components/store/Checkout";
-import { ConsentBanner } from "@/components/store/ConsentBanner";
 import { ProductVideo } from "@/components/store/ProductVideo";
 import { getStoreConfig, type PublicConfig } from "@/lib/store.functions";
 import { formatEGP } from "@/lib/egypt";
 import { track } from "@/lib/tracking";
+import { startAnalytics } from "@/lib/analytics-client";
 import hero from "@/assets/fountain-hero.jpg.asset.json";
 import details from "@/assets/fountain-details.jpg.asset.json";
 import tabletop from "@/assets/fountain-tabletop.jpg.asset.json";
@@ -60,7 +60,7 @@ function Landing() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [formVisible, setFormVisible] = useState(false);
 
-  useEffect(() => { track("PageView"); track("ViewContent"); }, []);
+  useEffect(() => { track("PageView"); track("ViewContent"); startAnalytics(); }, []);
   useEffect(() => {
     const el = document.getElementById("order");
     if (!el) return;
@@ -227,7 +227,6 @@ function Landing() {
         <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-bold text-foreground underline-offset-4 hover:underline"><MessageCircle className="size-4" /> واتساب <span dir="ltr">+20 106 437 7166</span></a>
         <p className="mt-2"><Link to="/privacy" className="underline">سياسة الخصوصية والإحصائيات</Link></p>
       </footer>
-      <ConsentBanner />
 
       {/* Sticky mobile bar */}
       <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 py-3 backdrop-blur transition-transform duration-300 md:hidden ${formVisible ? "translate-y-full" : ""}`}>
