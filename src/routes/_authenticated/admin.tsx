@@ -195,8 +195,8 @@ function Orders({ isAdmin }: { isAdmin: boolean }) {
             <tr>{["الطلب", "التاريخ", "العميل", "الهاتف", "العنوان", "الكمية", "الإجمالي", "الحالة", "المزامنة", ...(isAdmin ? ["الزيارة"] : [])].map((h) => <th key={h} className="p-3 font-bold whitespace-nowrap">{h}</th>)}</tr>
           </thead>
           <tbody>
-            {orders.isLoading && <tr><td colSpan={9} className="p-6 text-center">جاري التحميل…</td></tr>}
-            {!orders.isLoading && rows.length === 0 && <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">مفيش طلبات</td></tr>}
+            {orders.isLoading && <tr><td colSpan={isAdmin ? 10 : 9} className="p-6 text-center">جاري التحميل…</td></tr>}
+            {!orders.isLoading && rows.length === 0 && <tr><td colSpan={isAdmin ? 10 : 9} className="p-6 text-center text-muted-foreground">مفيش طلبات</td></tr>}
             {rows.map((o) => (
               <tr key={o.id} className="border-t border-border align-top">
                 <td className="p-3 font-bold whitespace-nowrap" dir="ltr">{o.order_number}</td>
