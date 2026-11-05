@@ -3,7 +3,8 @@
 ## 1. Commerce config (blocks ordering until set)
 Sign in at `/admin` as an **admin** → **الإعدادات** tab:
 - Unit price (EGP). Compare-at price only if it is a real previous price.
-- Shipping fee per governorate. Empty = shipping not available there.
+- Flat shipping fee per order (current: 80 EGP), optional per-governorate overrides.
+Current confirmed values: Dutti, 750 EGP (was 800), flat 80 EGP shipping per order. Delivery coverage is confirmed by phone, not claimed on the page.
 The confirm button stays disabled and the server rejects orders (`not_configured`) until a price and at least one governorate rate exist. All totals are computed in the database function `create_cod_order`; browser prices are never trusted.
 
 Still to publish on the page once supplied: return/exchange policy, warranty, official contacts, real reviews.
@@ -18,8 +19,9 @@ Still to publish on the page once supplied: return/exchange policy, warranty, of
    ```
 Anyone who signs up without a role sees "مفيش صلاحية" and RLS returns no rows.
 
-## 3. Google Sheet
-Create spreadsheet **Landing Page Orders**, sheet **Orders**, row 1 headers exactly:
+## 3. Google Sheet (existing — do not create another)
+Destination: https://docs.google.com/spreadsheets/d/1BcS0E30EHFlcXRnIGf9Y0rDoGPVULO54cyRmYOqZ87M/edit (already set in the workflow JSON).
+Make sure the tab is named **Orders** and row 1 headers are exactly:
 `Order ID | Order Date | Customer Name | Phone Number | Governorate | City | Full Address | Product Name | Product Color | Product Size | Quantity | Unit Price | Shipping Fee | Discount | Total Price | Payment Method | Order Status | Customer Notes | UTM Source | UTM Campaign | Sync Status`
 Order Date is sent already formatted in Africa/Cairo time.
 

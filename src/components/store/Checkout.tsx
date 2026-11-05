@@ -32,10 +32,10 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
     startedAt.current = Date.now();
   }, []);
 
-  const shipping = f.governorate && config.shippingRates ? config.shippingRates[f.governorate] : undefined;
+  const shipping = shippingFor(config, f.governorate);
   const subtotal = config.unitPrice != null ? config.unitPrice * qty : null;
   const total = subtotal != null && shipping != null ? subtotal + shipping : null;
-  const governorateUnavailable = !!f.governorate && !!config.shippingRates && shipping == null;
+  const governorateUnavailable = !!f.governorate && shipping == null && config.orderable;
 
   const set = (k: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (!started.current) { started.current = true; track("InitiateCheckout"); }
@@ -134,14 +134,20 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
           </div>
           <dl className="space-y-2 rounded-2xl bg-muted p-4 text-sm">
             <Row k="سعر القطعة" v={config.unitPrice != null ? formatEGP(config.unitPrice) : "لم يُحدد بعد"} />
-            <Row k="الخصم" v={formatEGP(0)} />
-            <Row k="مصاريف الشحن" v={shipping != null ? formatEGP(shipping) : "لم تُحدد بعد"} />
+            {config.compareAtPrice && config.unitPrice != null && (
+              <Row k="السعر قبل الخصم" v={formatEGP(config.compareAtPrice * qty)} />
+            )}
+            {config.compareAtPrice && config.unitPrice != null && (
+              <Row k="بتوفر" v={formatEGP((config.compareAtPrice - config.unitPrice) * qty)} />
+            )}
+            <Row k="مصاريف الشحن (للأوردر)" v={shipping != null ? formatEGP(shipping) : "لم تُحدد بعد"} />
             <div className="border-t border-border pt-2"><Row k="الإجمالي المستحق" v={total != null ? formatEGP(total) : "غير متاح"} bold /></div>
           </dl>
           <div className="text-sm leading-relaxed text-muted-foreground">
             <p><b className="text-foreground">{f.name}</b> — <span dir="ltr">{f.phone}</span></p>
             <p>{f.governorate}، {f.city} — {f.address}</p>
           </div>
+          <p className="text-xs leading-relaxed text-muted-foreground">هنأكد معاك إمكانية التوصيل لمنطقتك في مكالمة تأكيد الطلب قبل الشحن.</p>
           {!config.orderable && (
             <p className="rounded-xl border border-gold bg-gold-soft/40 p-3 text-sm">
               استقبال الطلبات هيتفتح أول ما يتم تأكيد السعر ومصاريف الشحن. بياناتك لسه موجودة في الفورم.
@@ -157,6 +163,12 @@ export function Checkout({ config, image }: { config: PublicConfig; image: strin
       )}
     </div>
   );
+}
+
+export function shippingFor(config: PublicConfig, governorate: string): number | undefined {
+  if (!governorate) return config.flatShippingFee ?? undefined;
+  const r = config.shippingRates?.[governorate];
+  return r ?? config.flatShippingFee ?? undefined;
 }
 
 function Row({ k, v, bold }: { k: string; v: string; bold?: boolean }) {
