@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicOutboxDispatchRouteImport } from './routes/api/public/outbox-dispatch'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOutboxDispatchRoute = ApiPublicOutboxDispatchRouteImport.update({
+  id: '/api/public/outbox-dispatch',
+  path: '/api/public/outbox-dispatch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/outbox-dispatch': typeof ApiPublicOutboxDispatchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/outbox-dispatch': typeof ApiPublicOutboxDispatchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/outbox-dispatch': typeof ApiPublicOutboxDispatchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/public/outbox-dispatch'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/public/outbox-dispatch'
+  id: '__root__' | '/' | '/api/public/outbox-dispatch'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicOutboxDispatchRoute: typeof ApiPublicOutboxDispatchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/outbox-dispatch': {
+      id: '/api/public/outbox-dispatch'
+      path: '/api/public/outbox-dispatch'
+      fullPath: '/api/public/outbox-dispatch'
+      preLoaderRoute: typeof ApiPublicOutboxDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicOutboxDispatchRoute: ApiPublicOutboxDispatchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
