@@ -8,14 +8,23 @@ function cairoDate(iso: string) {
   }).format(new Date(iso)).replace(",", "");
 }
 
+// Only production webhook paths on the store's n8n instance may receive order data.
+export function isAllowedWebhookUrl(u: string | undefined) {
+  if (!u) return false;
+  try {
+    const x = new URL(u);
+    return x.protocol === "https:" && x.hostname === "n8n.dutti.net" && /^\/webhook\/[^/]+/.test(x.pathname);
+  } catch { return false; }
+}
+
 export function n8nConfigured() {
-  return Boolean(process.env["N8N_WEBHOOK_URL"] && process.env["N8N_WEBHOOK_TOKEN"]);
+  return Boolean(isAllowedWebhookUrl(process.env["N8N_WEBHOOK_URL"]) && process.env["N8N_WEBHOOK_TOKEN"]);
 }
 
 export async function dispatchOutbox(admin: Admin, limit = 6) {
   const url = process.env["N8N_WEBHOOK_URL"];
   const token = process.env["N8N_WEBHOOK_TOKEN"];
-  if (!url || !token) return { skipped: "n8n_not_configured", processed: 0 };
+  if (!isAllowedWebhookUrl(url) || !token) return { skipped: "n8n_not_configured", processed: 0 };
 
   const { data: rows, error } = await admin.rpc("claim_outbox", { p_limit: limit });
   if (error) throw new Error(`claim_outbox failed: ${error.message}`);
